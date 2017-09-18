@@ -1,0 +1,16 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "jde-invoice-status-event-payload-output-map"
+        }
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "cxml-invoice-status-update-request"
+        }
+    },
+    "id": "ff1b4469-b7f0-4bc6-9e8d-46f6a0276fde",
+    "version": "5.2.0.0"
+}

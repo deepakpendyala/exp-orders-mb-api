@@ -1,0 +1,16 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ariba-cxml-response"
+        }
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "jde-invoice-status-event-payload"
+        }
+    },
+    "id": "d094d6e2-57c7-4f99-aabe-a4fb6b12104a",
+    "version": "5.2.0.0"
+}

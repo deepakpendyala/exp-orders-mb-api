@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <vm:connector name="InvoiceUpdatesVM" validateConnections="true" doc:name="VM"/>
+    <http:request-config name="TEST_CONN" host="0.0.0.0" port="8088" doc:name="HTTP Request Configuration"/>
+    <http:request-config name="JDE_HTTP" host="0.0.0.0" port="8081" doc:name="HTTP Request Configuration"/>
+    <flow name="invoice-status-jde-to-aribaFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration_1" path="/invoice-status" allowedMethods="POST" doc:name="Invoice-Status-Update-Listener"/>
+        <logger message="#['Invoice Update Request Received : \n' + payload + '\nMessage = ']" level="INFO" doc:name="Log Request"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="e8a59e91-4360-47e5-9290-42114baced82">
+            <dw:input-payload mimeType="application/xml"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+%namespace ns0 http://schemas.xmlsoap.org/soap/envelope/
+%namespace ns2 http://oracle.e1.bssv.JP040000/
+---
+{
+	documentCompany: payload.ns0#Envelope.ns0#Body.ns2#getVoucher.voucherGetHeader.voucherKey.documentCompany as :string,
+	documentNumber: payload.ns0#Envelope.ns0#Body.ns2#getVoucher.voucherGetHeader.voucherKey.documentNumber as :string,
+	documentTypeCode: payload.ns0#Envelope.ns0#Body.ns2#getVoucher.voucherGetHeader.voucherKey.documentTypeCode
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="Transformed Payload = #[payload]" level="INFO" doc:name="Logger"/>
+        <flow-ref name="ariba-outbound-invoice-adapter" doc:name="ariba-outbound-invoice-adapter"/>
+    </flow>
+    <flow name="ariba-outbound-invoice-adapter" initialState="started">
+        <dw:transform-message doc:name="Transform Message" metadata:id="ff1b4469-b7f0-4bc6-9e8d-46f6a0276fde">
+            <dw:input-payload mimeType="application/java"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace xml http://www.w3.org/XML/1998/namespace
+---
+{
+	cXML @(payloadID: now as :string ++ "cbi.com.ISU3" , timestamp: now as :string , version: "1.2.035" , lang: "en-US"): {
+		Header: {
+			From: {			
+				
+					Credential @(domain: 'NetworkID'): {
+					Identity: p('ariba.from.identity')
+					}
+												
+				},
+			To: {
+				Credential @(domain: 'NetworkID'): {
+					Identity: p('ariba.to.identity')
+				},
+				Correspondent: {
+					Contact @(role: "correspondent"): {
+						Name @(xml#lang: "en"): "Alex, Radu",
+						Email @(name: ""): "alex.radu@sap.com"
+					}
+				}
+			},
+			Sender:{
+				Credential @(domain:"NetworkID"):{
+					Identity:p('ariba.sender.identity'),
+					SharedSecret:p('ariba.sender.sharedsecret')
+				},
+				UserAgent:"jde mulesoft"
+			}
+		},
+		Request @(deploymentMode: "test"): {
+			StatusUpdateRequest: {
+				Status @(code: "200" , text: "ok" , xml#lang: "en-US"): "OK",
+				InvoiceStatus @(type: "paid"): {
+					InvoiceIDInfo @(invoiceDate: now as :string{format:"yyyy-MM-dd"} , invoiceID: "3493914.OP.PBQ_INV1"): null,
+					Comments @(xml#lang: "en-US"): "This invoice was paid. Look for a scheduled payment info soon!"
+				}
+			}
+		}
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <logger message="Payload after cXML transformation ::::::#[payload]:::::::" level="INFO" doc:name="Logger"/>
+        <set-variable value="#[payload]" variableName="originalPayloadBeforeCall" doc:name="Variable" />
+        <!-- <until-successful objectStore-ref="listableObjectStore" maxRetries="5" failureExpression="#[exception != null &amp;&amp; (exception.causedBy(java.net.ConnectException) || exception.causedBy(java.net.SocketTimeoutException)) || message.inboundProperties['http.status'] != 200]" doc:name="Until Successful"> 
+            <processor-chain doc:name="Processor Chain">
+                <set-payload value="#[flowVars.?originalPayloadBeforeCall]" doc:name="Variable"/>-->
+                <!-- <http:request config-ref="TEST_CONN" path="/test" method="POST" doc:name="HTTP"/> -->
+                <http:request config-ref="Ariba_HTTPS_Configuration_1" path="${ariba.path}" method="POST" doc:name="Ariba_HTTP"/>
+        <set-variable variableName="aribaResponseStatusCode" value="#[message.inboundProperties['http.status']]" doc:name="Variable"/>
+        <!--     </processor-chain>
+        </until-successful> -->
+        <logger message="Message = #[message]; Response of Ariba :::: #[payload]; STATUS CODE --&gt; #[flowVars.aribaResponseStatusCode] ; #[message.inboundProperties['http.status']]" level="INFO" doc:name="Log_Ariba_Exit"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.aribaResponseStatusCode == 200]">
+                <flow-ref name="sendResponseToJDESubFlow" doc:name="sendResponseToJDESubFlow"/>
+            </when>
+            <otherwise>
+            	<logger message="Ariba's Invoice Status Update Failed!!" level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+    </flow>
+    <sub-flow name="sendResponseToJDESubFlow">
+        <logger message="Sending Response to JDE" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="d094d6e2-57c7-4f99-aabe-a4fb6b12104a">
+            <dw:input-payload mimeType="application/xml"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://schemas.xmlsoap.org/soap/envelope/
+%namespace ns1 http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd
+%namespace ns2 http://oracle.e1.bssv.JP040000/
+---
+{
+	ns0#Envelope: {
+		ns0#Header: {
+			ns1#Security @(mustUnderstand: "1"): {
+				ns1#UsernameToken: {
+					ns1#Username: "MULESOFTST",
+					ns1#Password @(Type: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"): "5AZB,XC3kG"
+				}
+			}
+		},
+		ns0#Body: {
+			ns2#getVoucher: {
+				voucherGetHeader: {
+					voucherKey: {
+						documentCompany: payload.cXML.Response.documentCompany,
+						documentNumber: payload.cXML.Response.documentNumber,
+						documentTypeCode: payload.cXML.Response.documentTypeCode
+					}
+				}
+			}
+		}
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="Payload for JDE = #[payload]" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="JDE_HTTP" path="/invoice-update" method="POST" doc:name="JDE_UPDATE"/>
+        <logger message="DONE!; #[message]" level="INFO" doc:name="Logger"/>
+    </sub-flow>
+</mule>

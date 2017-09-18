@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<http:request-config name="Ariba_HTTPS_Configuration_1"
+		protocol="HTTPS" host="${ariba.host}" port="${ariba.port}" basePath="${ariba.basepath}"
+		doc:name="Ariba_HTTPS_Configuration_1">
+	</http:request-config>
+
+	<context:property-placeholder
+		location="classpath:ariba-${mule.env}.properties,classpath:inv_status_${mule.env}.properties,classpath:exception_mapping.properties" />
+
+	<http:listener-config name="HTTP_Listener_Configuration_1"
+		host="0.0.0.0" port="8081" doc:name="HTTP_Listener_Configuration_1" />
+    <spring:beans>
+        <spring:bean id="listableObjectStore" class="org.mule.util.store.SimpleMemoryObjectStore"/>
+    </spring:beans>
+
+</mule>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.2.035/cXML.dtd">
+<cXML payloadID="2017-08-23T08:10:50.317-08:00@cbi.com.ISU3"
+	timestamp="2017-08-23T07:59:23-04:00" version="1.2.035" xml:lang="en-US">
+	<Header>
+		<From>
+			<Credential domain="NetworkID">
+				<Identity>AN01055567864-T</Identity>
+			</Credential>
+			<Credential domain="EndPointID">
+				<Identity>JDE</Identity>
+			</Credential>
+			<Credential domain="SystemID">
+				<Identity>child1</Identity>
+			</Credential>
+		</From>
+		<To>
+			<Credential domain="NetworkID">
+				<Identity>AN01055570304-T</Identity>
+			</Credential>
+			<Correspondent>
+				<Contact role="correspondent">
+					<Name xml:lang="en">Alex, Radu</Name>
+					<Email name="">alex.radu@sap.com</Email>
+				</Contact>
+			</Correspondent>
+		</To>
+		<Sender>
+			<Credential domain="NetworkID">
+				<Identity>AN01055567864-T</Identity>
+				<SharedSecret>******</SharedSecret>
+			</Credential>
+			<UserAgent>CURL</UserAgent>
+		</Sender>
+	</Header>
+	<Request deploymentMode="test">
+		<StatusUpdateRequest>
+			<Status code="200" text="ok" xml:lang="en-US">OK</Status>
+			<!-- type (processing | canceled | reconciled | rejected | paying | paid) 
+				#REQUIRED -->
+			<InvoiceStatus type="paid">
+				<InvoiceIDInfo invoiceDate="2017-08-17" invoiceID="3493914.OP.PBQ_INV1" />
+				<!-- The partial amount paid against the InvoiceDetail document. This 
+					field is only relevant when the status type is ""paid"". If this element 
+					exists in an InvoiceStatus element, <PartialAmount> <Money currency="US">25</Money> 
+					</PartialAmount> it means that the buyer does not pay the full amount as 
+					the InvoiceDetail request specified: -->
+				<!-- Testing Comments -->
+				<Comments xml:lang="en-US">This invoice was paid. Look for a
+					scheduled payment info soon!</Comments>
+			</InvoiceStatus>
+		</StatusUpdateRequest>
+	</Request>
+</cXML>

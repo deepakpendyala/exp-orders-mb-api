@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.2.030/cXML.dtd">
+<cXML payloadID="R0xEVFJOOm9yYWNsZS5hcHBzLnBvLmV2ZW50LBBnhtbHBvOjE2OTE4OTMtNjEyOTEyX2N1dG92ZXJfMQ_7" timestamp="2017-08-03T08:13:10.317-06:00" version="1.2.033" xml:lang="en-US">
+    <Header>
+        <From>
+            <Credential domain="NetworkID">
+                <Identity>AN01055567864-T</Identity>
+            </Credential>
+        </From>
+        <To>
+            <Credential domain="NetworkID">
+                <Identity>AN01056349837-T</Identity>
+            </Credential>
+            <Correspondent>
+                <Contact role="correspondent">
+                    <Name xml:lang="en">Eric, Lukens</Name>
+                    <Email name="">eric.lukens@sap.com</Email>
+                </Contact>
+            </Correspondent>
+        </To>
+        <Sender>
+            <Credential domain="NetworkID">
+                <Identity>AN01055567864-T</Identity>
+                <SharedSecret>ARIBA123</SharedSecret>
+            </Credential>
+            <UserAgent>CURL</UserAgent>
+        </Sender>
+    </Header>
+    <Request deploymentMode="test">
+        <OrderRequest>
+            <OrderRequestHeader orderDate="2017-08-03T17:14:41.0000-07:00" orderID="TEST7" orderType="regular" orderVersion="1" type="new">
+                <Total>
+                    <Money currency="USD">40</Money>
+                </Total>
+                <ShipTo>
+                    <Address addressID="2233" isoCountryCode="US">
+                        <Name xml:lang="en">26 US Surface Whse (Cortez Hills)</Name>
+                        <PostalAddress name="default">
+                            <Street>Cortez </Street>
+                            <Street>State Route 306 16 Miles South of Crescent Valley</Street>
+                            <Street>Surface Whse Cortez Hills</Street>
+                            <City>Crescent Valley</City>
+                            <State>NV</State>
+                            <PostalCode>89821</PostalCode>
+                            <Country isoCountryCode="US">US</Country>
+                        </PostalAddress>
+                    </Address>
+                </ShipTo>
+                <BillTo>
+                    <Address addressID="1916" isoCountryCode="US">
+                        <Name xml:lang="en">Cortez Joint Venture</Name>
+                        <PostalAddress name="default">
+                            <Street>Barrick Cortez Inc.</Street>
+                            <Street>P.O. Box 1020</Street>
+                            <Street/>
+                            <City>Elko</City>
+                            <State>NV</State>
+                            <PostalCode>89803</PostalCode>
+                            <Country isoCountryCode="US">US</Country>
+                        </PostalAddress>
+                    </Address>
+                </BillTo>
+                <Contact addressID="58" role="supplierCorporate">
+                    <Name xml:lang="en">A1 Radiator Inc</Name>
+                    <PostalAddress>
+                        <Street>4270 Idaho Street</Street>
+                        <Street/>
+                        <Street/>
+                        <City>Elko</City>
+                        <State>NV</State>
+                        <PostalCode>89801</PostalCode>
+                        <Country isoCountryCode="US">US</Country>
+                    </PostalAddress>
+                    <Phone>
+                        <TelephoneNumber>
+                            <CountryCode isoCountryCode="US"/>
+                            <AreaOrCityCode/>
+                            <Number>775 753-8100</Number>
+                        </TelephoneNumber>
+                    </Phone>
+                    <Fax>
+                        <TelephoneNumber>
+                            <CountryCode isoCountryCode="US"/>
+                            <AreaOrCityCode/>
+                            <Number>775753-8362</Number>
+                        </TelephoneNumber>
+                    </Fax>
+                </Contact>
+                <Contact addressID="CM1" role="soldTo">
+                    <Name xml:lang="en">Cortez</Name>
+                    <PostalAddress>
+                        <Street>Cortez</Street>
+                        <Street>State Route 306 16 Miles South of Crescent Valley</Street>
+                        <Street>Surface Whse Cortez Hills</Street>
+                        <City>Crescent Valley</City>
+                        <State>Eureka</State>
+                        <PostalCode>89821</PostalCode>
+                        <Country isoCountryCode="US">US</Country>
+                    </PostalAddress>
+                </Contact>
+                <Contact role="purchasingAgent">
+                    <Name xml:lang="en">Eric, Lukens</Name>
+                    <Email name="">eric.lukens@sap.com</Email>
+                </Contact>
+                <Contact role="carrierCorporate">
+                    <Name xml:lang="en">EXEL ph:855-577-5005</Name>
+                </Contact>
+                <Comments xml:lang="en">Mock test PO 7 - please disregard</Comments>
+                <TermsOfDelivery>
+                    <TermsOfDeliveryCode value="DeliveryCondition"/>
+                    <ShippingPaymentMethod value="Other"/>
+                    <TransportTerms value="Other">Cost-InsuranceAndFreight</TransportTerms>
+                </TermsOfDelivery>
+                <Extrinsic name="incoTerm">CIF</Extrinsic>
+                <Extrinsic name="incoTermDesc">Cost-InsuranceAndFreight</Extrinsic>
+                <Extrinsic name="incoTermLocation">USA, NEVADA</Extrinsic>
+                <Extrinsic name="transactionCategoryOrType">S</Extrinsic>
+                <Extrinsic name="term">NET 30 DAYS</Extrinsic>
+                <Extrinsic name="vendorTerms">
+                    <URL>https://www.cbi.com/termsandconditions/us</URL>
+                </Extrinsic>
+            </OrderRequestHeader>
+            <ItemOut agreementItemNumber="607" itemType="item" lineNumber="1" quantity="400">
+                <ItemID>
+                    <SupplierPartID>LABOR</SupplierPartID>
+                    <BuyerPartID>LABOR111</BuyerPartID>
+                </ItemID>
+                <ItemDetail>
+                    <UnitPrice>
+                        <Money currency="USD">0.1</Money>
+                    </UnitPrice>
+                    <Description xml:lang="en">LABOR - A-1 RADIATOR TO REPAIR RADIATOR  WO 6002254  EQUIP 9973</Description>
+                    <UnitOfMeasure>EA</UnitOfMeasure>
+                    <Classification domain="No Mapping"/>
+                    <Extrinsic name="contractNumber">2612304</Extrinsic>
+                    <Extrinsic name="contractLineItemNo">607</Extrinsic>
+                </ItemDetail>
+                <Comments xml:lang="en">Very affordable rates</Comments>
+                <ScheduleLine lineNumber="1" quantity="400" requestedDeliveryDate="2017-08-28T18:00:00.0000-06:00" requestedShipmentDate="2017-08-30T08:06:41.0000-060:00">
+                    <UnitOfMeasure>EA</UnitOfMeasure>
+                </ScheduleLine>
+                <MasterAgreementIDInfo agreementID="2612304"/>
+            </ItemOut>
+        </OrderRequest>
+    </Request>
+</cXML>

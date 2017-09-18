@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE cXML SYSTEM "cXML.dtd"> -->
+<cXML timestamp="2017-08-29T12:18:56-07:00" payloadID="1504034336325-3793454793816304493@216.109.111.146">
+	<Response>
+		<Status code="200" text="Accepted"></Status>
+		<documentCompany>00210</documentCompany>
+		<documentNumber>196150</documentNumber>
+		<documentTypeCode>PV</documentTypeCode>
+	</Response>
+</cXML>

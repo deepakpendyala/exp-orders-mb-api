@@ -1,0 +1,40 @@
+machine:
+  # set java version to 8
+  java:
+    version: openjdk8
+
+  environment:
+      _JAVA_OPTIONS: "-Xms128m -Xmx512m"
+          
+#dependencies
+dependencies:
+   override:
+    - mvn --fail-never dependency:go-offline -s settings.xml || true
+
+#test
+test:
+  override:
+    # build package, unit test and deploy to cloud hub dev environment
+    - mvn clean test -s settings.xml
+
+deployment:
+# deploy to Dev Environment
+  development:
+    branch: dev
+    commands:
+      - mvn clean package mule:deploy -Denvironment=Development -DapplicationName=integ-aribanet-invoice-status-outbound-adapter -DworkerType=Micro -s settings.xml -Denv=dev
+      # set pause time to wait for cloud deployment complete
+      - sleep 5m
+      # Run integration testing using maven plugin
+      - mvn integration-test -s settings.xml
+      # Store unit and integration testing results
+      - mkdir -p $CIRCLE_TEST_REPORTS/munit/
+      - mkdir -p $CIRCLE_TEST_REPORTS/int/
+      - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/munit/ \;
+      - find . -type f -regex ".*/target/munit-reports/coverage/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/munit/ \;
+      - find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/int/ \;
+  test:
+    # deploy to Test Environment
+    branch: test
+    commands:
+      - mvn clean package mule:deploy -Denvironment=Test -DapplicationName=integ-aribanet-invoice-status-outbound-adapter -DworkerType=Micro -s settings.xml -Denv=test

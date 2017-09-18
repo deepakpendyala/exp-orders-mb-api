@@ -1,0 +1,16 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ariba-cxml-response"
+        }
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ariba-cxml-response-output"
+        }
+    },
+    "id": "90100f2e-eec5-4e08-9641-50459160efa2",
+    "version": "5.2.0.0"
+}
